@@ -84,8 +84,41 @@ public class AsteriaMyBatisPlugin extends PluginAdapter {
 	}
 
 	@Override
+	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		getDomainName(introspectedTable);
+		addAnnotation(topLevelClass, introspectedTable, ClassType.MODEL);
+		return true;
+	}
+
+	@Override
+	public boolean modelFieldGenerated(Field field, TopLevelClass topLevelClass, IntrospectedColumn introspectedColumn, IntrospectedTable introspectedTable, ModelClassType modelClassType) {
+		addFieldAnnotation(field, introspectedColumn, topLevelClass, ClassType.MODEL);
+		return true;
+	}
+
+	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
-		return super.contextGenerateAdditionalJavaFiles(introspectedTable);
+		List<GeneratedJavaFile> javaFiles = super.contextGenerateAdditionalJavaFiles(introspectedTable);
+		String domainObjectName = getDomainName(introspectedTable);
+		if (createService) {
+			if (CollectionUtils.isEmpty(javaFiles)) {
+				javaFiles = Lists.newArrayList();
+			}
+
+			Interface serviceClass = new Interface(baseJavaPackage + ".service." + domainObjectName + "Service");
+			serviceClass.setVisibility(JavaVisibility.PUBLIC);
+			GeneratedJavaFile serviceFile = new GeneratedJavaFile(serviceClass, targetProject, context.getJavaFormatter());
+			javaFiles.add(serviceFile);
+
+			TopLevelClass serviceImplClass = new TopLevelClass(baseJavaPackage + ".service.impl." + domainObjectName + "ServiceImpl");
+			serviceImplClass.setVisibility(JavaVisibility.PUBLIC);
+			serviceImplClass.addImportedType(serviceClass.getType());
+			serviceImplClass.addSuperInterface(serviceClass.getType());
+			GeneratedJavaFile serviceImplFile = new GeneratedJavaFile(serviceImplClass, targetProject, context.getJavaFormatter());
+			javaFiles.add(serviceImplFile);
+		}
+		javaFiles.addAll(generatedDto(introspectedTable));
+		return javaFiles;
 	}
 
 	private List<GeneratedJavaFile> generatedDto(IntrospectedTable introspectedTable) {
@@ -167,8 +200,8 @@ public class AsteriaMyBatisPlugin extends PluginAdapter {
 		createService = getPropertyAsBoolean(properties, "createService", false);
 		createDto = getPropertyAsBoolean(properties, "createDto", false);
 		createConvert = getPropertyAsBoolean(properties, "createConvert", false);
-		super.context.getCommentGeneratorConfiguration().addProperty("lombok", getPropertyAsString(properties, "lombok"));
-		super.context.getCommentGeneratorConfiguration().addProperty("enableSwagger", getPropertyAsString(properties, "enableSwagger"));
+		super.context.getCommentGeneratorConfiguration().addProperty("lombok", getPropertyAsString(properties, "lombok", "false"));
+		super.context.getCommentGeneratorConfiguration().addProperty("enableSwagger", getPropertyAsString(properties, "enableSwagger", "false"));
 	}
 
 	/**
@@ -178,17 +211,7 @@ public class AsteriaMyBatisPlugin extends PluginAdapter {
 	 * @return
 	 */
 	private String getDomainName(IntrospectedTable introspectedTable) {
-		DomainObjectRenamingRule rule = introspectedTable.getTableConfiguration().getDomainObjectRenamingRule();
-		String domainObjectName = introspectedTable.getTableConfiguration().getTableName();
-		domainObjectName = JavaBeansUtil.getCamelCaseString(domainObjectName, true);
-		if (rule != null) {
-			Pattern pattern = Pattern.compile(rule.getSearchString());
-			String replaceString = rule.getReplaceString();
-			replaceString = replaceString == null ? "" : replaceString;
-			Matcher matcher = pattern.matcher(domainObjectName);
-			domainObjectName = matcher.replaceAll(replaceString);
-		}
-		return domainObjectName;
+		return introspectedTable.getFullyQualifiedTable().getDomainObjectName();
 	}
 
 	private void addAnnotation(TopLevelClass topLevelClass, IntrospectedTable introspectedTable, ClassType type) {

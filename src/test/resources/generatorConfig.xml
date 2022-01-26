@@ -1,0 +1,37 @@
+<!DOCTYPE generatorConfiguration PUBLIC
+    "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+    "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="dsql" targetRuntime="MyBatis3DynamicSql">
+
+        <property name="targetProject" value="src/test/java"/>
+        <property name="baseJavaPackage" value="io.github.asteria"/>
+
+
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaMyBatisPlugin">
+            <property name="lombok" value="true"/>
+            <property name="lombokBuilder" value="true"/>
+            <property name="createService" value="true"/>
+            <property name="createDto" value="true"/>
+            <property name="enableSwagger" value="false"/>
+        </plugin>
+
+        <commentGenerator type="io.github.asteria.generator.mybatis.plugin.comment.AsteriaCommentGenerator"/>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://49.232.3.116:3308/ops_admin?user=ops_admin&amp;password=ops-admin-test&amp;useUnicode=true" />
+
+
+        <javaModelGenerator targetPackage="io.github.asteria.domain" targetProject="src/test/java"/>
+
+        <javaClientGenerator targetPackage="io.github.asteria.mapper" targetProject="src/test/java" type="MyBatis3DynamicSql"/>
+
+
+        <table tableName="t_%">
+            <generatedKey column="id" sqlStatement="JDBC"/>
+            <domainObjectRenamingRule searchString="^T" replaceString=""/>
+            <columnOverride column="is_valid" javaType="java.lang.Integer"/>
+            <columnOverride column="status" javaType="java.lang.Integer"/>
+        </table>
+    </context>
+</generatorConfiguration>
