@@ -5,16 +5,16 @@
     <context id="dsql" targetRuntime="MyBatis3DynamicSql">
 
         <property name="targetProject" value="src/test/java"/>
-        <property name="baseJavaPackage" value="io.github.asteria"/>
+        <property name="basePackage" value="io.github.asteria"/>
+        <property name="entityPackage" value="entity"/>
+        <property name="lombok" value="true"/>
+        <property name="lombokBuilder" value="true"/>
 
 
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaMyBatisPlugin">
-            <property name="lombok" value="true"/>
-            <property name="lombokBuilder" value="true"/>
-            <property name="createService" value="true"/>
-            <property name="createDto" value="true"/>
-            <property name="enableSwagger" value="false"/>
-        </plugin>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsterIaLombokPlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServiceImplPlugin"/>
 
         <commentGenerator type="io.github.asteria.generator.mybatis.plugin.comment.AsteriaCommentGenerator"/>
 
