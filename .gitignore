@@ -51,4 +51,7 @@ screenshot
 build
 
 
-
+**/src/main/test/io/github/asteria/mapper
+**/src/main/test/io/github/asteria/service
+**/src/main/test/io/github/asteria/domain
+**/src/main/test/io/github/asteria/entity
