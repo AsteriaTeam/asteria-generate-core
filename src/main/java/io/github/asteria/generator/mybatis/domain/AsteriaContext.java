@@ -43,8 +43,8 @@ public class AsteriaContext {
 				this.lombokBuilder = true;
 			}
 		}
-		targetProject = PropertiesUtils.getPropertyAsString(context.getProperties(), "targetProject", "");
-		basePackage = PropertiesUtils.getPropertyAsString(context.getProperties(), "basePackage", "");
+		targetProject = PropertiesUtils.getPropertyAsString(context.getProperties(), "targetProject", "src/main/java");
+		basePackage = PropertiesUtils.getPropertyAsString(context.getProperties(), "basePackage", "io.github.asteria");
 		entityPackage = PropertiesUtils.getPropertyAsString(context.getProperties(), "entityPackage", "entity");
 		entitySuffix = PropertiesUtils.getPropertyAsString(context.getProperties(), "entitySuffix", "DTO");
 
