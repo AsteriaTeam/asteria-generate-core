@@ -11,7 +11,7 @@
         <property name="lombokBuilder" value="true"/>
 
 
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsterIaLombokPlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaLombokPlugin"/>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin"/>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin"/>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServiceImplPlugin"/>

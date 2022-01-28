@@ -12,7 +12,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
-//@Ignore
+@Ignore
 public class MyBatisGenerateTest {
 
 	@Test
