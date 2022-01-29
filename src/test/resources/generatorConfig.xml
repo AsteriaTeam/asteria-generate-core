@@ -24,7 +24,7 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://49.232.3.116:3308/ops_admin?user=ops_admin&amp;password=ops-admin-test&amp;useUnicode=true" />
+                        connectionURL="jdbc:mysql://{you db url}/ops_admin?user={user}&amp;password={password}&amp;useUnicode=true" />
 
 
         <javaModelGenerator targetPackage="io.github.asteria.domain" targetProject="src/test/java"/>
