@@ -2,13 +2,16 @@ package io.github.asteria.generator.mybatis.plugin;
 
 import com.google.common.collect.Lists;
 import io.github.asteria.generator.mybatis.domain.AsteriaContext;
+import io.github.asteria.generator.mybatis.plugin.codegen.AbstractServiceGenerator;
+import io.github.asteria.generator.mybatis.plugin.codegen.DefaultServiceGenerator;
+import io.github.asteria.generator.mybatis.plugin.codegen.dynamic.DynamicServiceGenerator;
 import io.github.asteria.generator.util.PluginUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.config.Context;
+import org.mybatis.generator.internal.util.JavaBeansUtil;
 
 import java.util.List;
 import java.util.Properties;
@@ -28,12 +31,13 @@ public class AsteriaServiceImplPlugin extends PluginAdapter {
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
 		List<GeneratedJavaFile> javaFileList = Lists.newArrayList();
-		String domainName = PluginUtils.getDomainName(introspectedTable);
 		FullyQualifiedJavaType domainType = PluginUtils.getDomainType(introspectedTable);
 		FullyQualifiedJavaType entityType = PluginUtils.getEntityType(introspectedTable, asteriaContext);
 		FullyQualifiedJavaType mapperType = PluginUtils.getMapperType(introspectedTable);
 		FullyQualifiedJavaType serviceType = PluginUtils.getServiceType(introspectedTable, asteriaContext);
 		FullyQualifiedJavaType serviceImplType = PluginUtils.getServiceImplType(introspectedTable, asteriaContext);
+		FullyQualifiedJavaType beanMapperType = PluginUtils.getBeanMapperType(asteriaContext);
+
 
 		// impl
 		TopLevelClass topLevelClass = new TopLevelClass(serviceImplType);
@@ -44,20 +48,42 @@ public class AsteriaServiceImplPlugin extends PluginAdapter {
 		topLevelClass.addImportedType(entityType);
 		topLevelClass.addImportedType(mapperType);
 		topLevelClass.addImportedType(serviceType);
+		topLevelClass.addImportedType(beanMapperType);
 
 
-		Field mapperField = new Field(mapperType.getShortName(), mapperType);
+		String mapperVar = JavaBeansUtil.getValidPropertyName(mapperType.getShortName());
+
+		// constructor
+		Method method = new Method(serviceImplType.getShortName());
+		method.addParameter(new Parameter(mapperType, mapperVar));
+		method.addParameter(new Parameter(beanMapperType, "mapperFacade"));
+		method.setConstructor(true);
+		method.setVisibility(JavaVisibility.PUBLIC);
+		method.addBodyLine("this." + mapperVar + " = " + mapperVar + ";");
+		method.addBodyLine("this.mapperFacade = mapperFacade;");
+		topLevelClass.addMethod(method);
+
+
+		Field mapperField = new Field(mapperVar, mapperType);
 		mapperField.setVisibility(JavaVisibility.PRIVATE);
+		mapperField.setFinal(true);
+
+
+		Field beanMapperField = new Field("mapperFacade", beanMapperType);
+		beanMapperField.setVisibility(JavaVisibility.PRIVATE);
+		beanMapperField.setFinal(true);
 
 		topLevelClass.addField(mapperField);
-
-		Method savaMethod = new Method("save");
-		savaMethod.addParameter(new Parameter(entityType, "entity"));
-		savaMethod.setVisibility(JavaVisibility.PUBLIC);
-		savaMethod.addAnnotation("@Override");
-		topLevelClass.addMethod(savaMethod);
+		topLevelClass.addField(beanMapperField);
 
 
+		AbstractServiceGenerator serviceGenerator = new DefaultServiceGenerator(asteriaContext, introspectedTable, topLevelClass);
+		if (introspectedTable.getTargetRuntime() == IntrospectedTable.TargetRuntime.MYBATIS3_DSQL) {
+			serviceGenerator = new DynamicServiceGenerator(asteriaContext, introspectedTable, topLevelClass);
+		}
+		serviceGenerator.generatedSaveMethod();
+		serviceGenerator.generatedGetMethod();
+		serviceGenerator.generatedGetListMethod();
 
 
 		javaFileList.add(new GeneratedJavaFile(topLevelClass, asteriaContext.getTargetProject(), context.getJavaFormatter()));

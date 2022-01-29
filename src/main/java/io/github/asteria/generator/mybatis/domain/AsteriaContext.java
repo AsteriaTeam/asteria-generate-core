@@ -34,6 +34,8 @@ public class AsteriaContext {
 
 	private String serviceImplSuffix;
 
+	private String beanMapper;
+
 	public void setContext(Context context){
 		Boolean lombokFlag = PropertiesUtils.getPropertyAsBoolean(context.getProperties(), "lombok", false);
 		if (lombokFlag) {
@@ -55,6 +57,8 @@ public class AsteriaContext {
 		serviceImplPackage = PropertiesUtils.getPropertyAsString(context.getProperties(), "serviceImplPackage", "service.impl");
 		serviceImplPrefix = PropertiesUtils.getPropertyAsString(context.getProperties(), "serviceImplPrefix", "");
 		serviceImplSuffix = PropertiesUtils.getPropertyAsString(context.getProperties(), "serviceImplSuffix", "ServiceImpl");
+
+		beanMapper = PropertiesUtils.getPropertyAsString(context.getProperties(),"beanMapper","orika");
 
 	}
 
@@ -79,5 +83,7 @@ public class AsteriaContext {
 		serviceImplPackage = PropertiesUtils.getPropertyAsString(properties, "serviceImplPackage", serviceImplPackage);
 		serviceImplPrefix = PropertiesUtils.getPropertyAsString(properties, "serviceImplPrefix", serviceImplPrefix);
 		serviceImplSuffix = PropertiesUtils.getPropertyAsString(properties, "serviceImplSuffix", serviceImplSuffix);
+
+		beanMapper = PropertiesUtils.getPropertyAsString(properties,"beanMapper",beanMapper);
 	}
 }

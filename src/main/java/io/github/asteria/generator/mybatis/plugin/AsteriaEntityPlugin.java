@@ -48,7 +48,7 @@ public class AsteriaEntityPlugin extends PluginAdapter {
 				entityClass.addImportedType(r.getFullyQualifiedJavaType());
 				Field field = new Field(JavaBeansUtil.getJavaBeansField(r, this.context, introspectedTable));
 				entityClass.addField(field);
-				if (asteriaContext.isLombok()) {
+				if (!asteriaContext.isLombok()) {
 					// get set method
 					Method getMethod = JavaBeansUtil.getJavaBeansGetter(r, context, introspectedTable);
 					Method setMethod = JavaBeansUtil.getJavaBeansGetter(r, context, introspectedTable);
