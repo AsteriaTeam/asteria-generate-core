@@ -1,27 +1,34 @@
 package io.github.asteria.generator.mybatis.plugin;
 
+import java.util.List;
+import java.util.Properties;
+
 import com.google.common.collect.Lists;
-import io.github.asteria.generator.mybatis.domain.AsteriaContext;
+import io.github.asteria.generator.mybatis.consts.Const;
 import io.github.asteria.generator.mybatis.plugin.codegen.AbstractServiceGenerator;
 import io.github.asteria.generator.mybatis.plugin.codegen.DefaultServiceGenerator;
 import io.github.asteria.generator.mybatis.plugin.codegen.dynamic.DynamicServiceGenerator;
 import io.github.asteria.generator.util.PluginUtils;
+import io.github.asteria.generator.util.PropertiesUtils;
 import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.*;
-import org.mybatis.generator.config.Context;
+import org.mybatis.generator.api.dom.java.Field;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
-
-import java.util.List;
-import java.util.Properties;
 
 /**
  * service plugin
  */
-public class AsteriaServiceImplPlugin extends PluginAdapter {
+public class AsteriaServiceImplPlugin extends AsteriaAbstractPlugin {
 
-	private final AsteriaContext asteriaContext = new AsteriaContext();
+	private String serviceImplPackage;
+	private String serviceImplPrefix;
+	private String serviceImplSuffix;
+
 
 	@Override
 	public boolean validate(List<String> list) {
@@ -30,13 +37,18 @@ public class AsteriaServiceImplPlugin extends PluginAdapter {
 
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
+
+		introspectedTable.setAttribute(Const.SERVICE_IMPL_PACKAGE_ATTR, serviceImplPackage);
+		introspectedTable.setAttribute(Const.SERVICE_IMPL_PREFIX_ATTR, serviceImplPrefix);
+		introspectedTable.setAttribute(Const.SERVICE_IMPL_SUFFIX_ATTR, serviceImplSuffix);
+
 		List<GeneratedJavaFile> javaFileList = Lists.newArrayList();
 		FullyQualifiedJavaType domainType = PluginUtils.getDomainType(introspectedTable);
-		FullyQualifiedJavaType entityType = PluginUtils.getEntityType(introspectedTable, asteriaContext);
+		FullyQualifiedJavaType entityType = PluginUtils.getEntityType(introspectedTable, this.context);
 		FullyQualifiedJavaType mapperType = PluginUtils.getMapperType(introspectedTable);
-		FullyQualifiedJavaType serviceType = PluginUtils.getServiceType(introspectedTable, asteriaContext);
-		FullyQualifiedJavaType serviceImplType = PluginUtils.getServiceImplType(introspectedTable, asteriaContext);
-		FullyQualifiedJavaType beanMapperType = PluginUtils.getBeanMapperType(asteriaContext);
+		FullyQualifiedJavaType serviceType = PluginUtils.getServiceType(introspectedTable, this.context);
+		FullyQualifiedJavaType serviceImplType = PluginUtils.getServiceImplType(introspectedTable, this.context);
+		FullyQualifiedJavaType beanMapperType = PluginUtils.getBeanMapperType(this.context);
 
 
 		// impl
@@ -77,28 +89,24 @@ public class AsteriaServiceImplPlugin extends PluginAdapter {
 		topLevelClass.addField(beanMapperField);
 
 
-		AbstractServiceGenerator serviceGenerator = new DefaultServiceGenerator(asteriaContext, introspectedTable, topLevelClass);
+		AbstractServiceGenerator serviceGenerator = new DefaultServiceGenerator(this.context, introspectedTable, topLevelClass);
 		if (introspectedTable.getTargetRuntime() == IntrospectedTable.TargetRuntime.MYBATIS3_DSQL) {
-			serviceGenerator = new DynamicServiceGenerator(asteriaContext, introspectedTable, topLevelClass);
+			serviceGenerator = new DynamicServiceGenerator(this.context, introspectedTable, topLevelClass);
 		}
 		serviceGenerator.generatedSaveMethod();
 		serviceGenerator.generatedGetMethod();
 		serviceGenerator.generatedGetListMethod();
 
 
-		javaFileList.add(new GeneratedJavaFile(topLevelClass, asteriaContext.getTargetProject(), context.getJavaFormatter()));
+		javaFileList.add(new GeneratedJavaFile(topLevelClass, targetProject, javaFileEncoding, context.getJavaFormatter()));
 		return javaFileList;
-	}
-
-	@Override
-	public void setContext(Context context) {
-		this.context = context;
-		asteriaContext.setContext(context);
 	}
 
 	@Override
 	public void setProperties(Properties properties) {
 		this.properties = properties;
-		asteriaContext.setProperties(properties);
+		this.serviceImplPackage = PropertiesUtils.getPropertyAsString(properties, "serviceImplPackage", "service.impl");
+		this.serviceImplPrefix = PropertiesUtils.getPropertyAsString(properties, "serviceImplPrefix", "");
+		this.serviceImplSuffix = PropertiesUtils.getPropertyAsString(properties, "serviceImplSuffix", "Impl");
 	}
 }

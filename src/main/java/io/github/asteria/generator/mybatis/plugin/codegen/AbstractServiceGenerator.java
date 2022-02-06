@@ -1,6 +1,5 @@
 package io.github.asteria.generator.mybatis.plugin.codegen;
 
-import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.util.PluginUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -10,13 +9,14 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.config.Context;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
 
 import java.util.List;
 
 public abstract class AbstractServiceGenerator {
 
-	protected final AsteriaContext context;
+	protected final Context context;
 
 	protected final IntrospectedTable introspectedTable;
 
@@ -26,17 +26,17 @@ public abstract class AbstractServiceGenerator {
 	protected final FullyQualifiedJavaType domainType;
 	protected final FullyQualifiedJavaType entityType;
 
-	public AbstractServiceGenerator(AsteriaContext context,IntrospectedTable introspectedTable,TopLevelClass topLevelClass) {
+	public AbstractServiceGenerator(Context context, IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
 		this.context = context;
 		this.introspectedTable = introspectedTable;
 		this.topLevelClass = topLevelClass;
 		this.mapperType = PluginUtils.getMapperType(introspectedTable);
 		this.domainType = PluginUtils.getDomainType(introspectedTable);
-		this.entityType = PluginUtils.getEntityType(introspectedTable,context);
+		this.entityType = PluginUtils.getEntityType(introspectedTable, context);
 
 	}
 
-	public void generatedSaveMethod(){
+	public void generatedSaveMethod() {
 		String entityVal = JavaBeansUtil.getValidPropertyName(entityType.getShortName());
 		String mapperVar = JavaBeansUtil.getValidPropertyName(mapperType.getShortName());
 

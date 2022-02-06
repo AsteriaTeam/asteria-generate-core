@@ -1,7 +1,6 @@
 package io.github.asteria.generator.util;
 
 import io.github.asteria.generator.mybatis.consts.Const;
-import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -9,6 +8,7 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.config.Context;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
 
 import java.util.List;
@@ -47,12 +47,18 @@ public class PluginUtils {
 		return new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
 	}
 
-	public static String getEntityName(IntrospectedTable introspectedTable, AsteriaContext context) {
-		return getDomainName(introspectedTable) + context.getEntitySuffix();
+	public static String getBasePackage(Context context) {
+		return (String) context.getProperties().get(Const.BASE_PACKAGE_PROP);
 	}
 
-	public static FullyQualifiedJavaType getEntityType(IntrospectedTable introspectedTable, AsteriaContext context) {
-		return new FullyQualifiedJavaType(StringUtils.join(new String[]{context.getBasePackage(), context.getEntityPackage(), getEntityName(introspectedTable, context)}, "."));
+	public static String getEntityName(IntrospectedTable introspectedTable) {
+		return getDomainName(introspectedTable) + introspectedTable.getAttribute(Const.ENTITY_SUFFIX_ATTR);
+	}
+
+	public static FullyQualifiedJavaType getEntityType(IntrospectedTable introspectedTable, Context context) {
+		String entityPackage = (String) introspectedTable.getAttribute(Const.ENTITY_PACKAGE_ATTR);
+		String entitySuffix = (String) introspectedTable.getAttribute(Const.ENTITY_SUFFIX_ATTR);
+		return new FullyQualifiedJavaType(StringUtils.join(new String[]{context.getProperties().getProperty(Const.BASE_PACKAGE_PROP), entityPackage, getEntityName(introspectedTable)}, "."));
 	}
 
 
@@ -60,24 +66,24 @@ public class PluginUtils {
 		return new FullyQualifiedJavaType(introspectedTable.getMyBatis3JavaMapperType());
 	}
 
-	public static String getServiceName(IntrospectedTable introspectedTable, AsteriaContext context) {
-		return context.getServicePrefix() + getDomainName(introspectedTable) + context.getServiceSuffix();
+	public static String getServiceName(IntrospectedTable introspectedTable) {
+		return introspectedTable.getAttribute(Const.SERVICE_PREFIX_ATTR) + getDomainName(introspectedTable) + introspectedTable.getAttribute(Const.SERVICE_SUFFIX_ATTR);
 	}
 
-	public static FullyQualifiedJavaType getServiceType(IntrospectedTable introspectedTable, AsteriaContext context) {
-		return new FullyQualifiedJavaType(StringUtils.join(new String[]{context.getBasePackage(), context.getServicePackage(), getServiceName(introspectedTable, context)}, "."));
+	public static FullyQualifiedJavaType getServiceType(IntrospectedTable introspectedTable, Context context) {
+		return new FullyQualifiedJavaType(StringUtils.join(new String[]{getBasePackage(context), (String) introspectedTable.getAttribute(Const.SERVICE_PACKAGE_ATTR), getServiceName(introspectedTable)}, "."));
 	}
 
-	public static String getServiceImplName(IntrospectedTable introspectedTable, AsteriaContext context) {
-		return context.getServiceImplPrefix() + getDomainName(introspectedTable) + context.getServiceImplSuffix();
+	public static String getServiceImplName(IntrospectedTable introspectedTable, Context context) {
+		return introspectedTable.getAttribute(Const.SERVICE_IMPL_PREFIX_ATTR) + getDomainName(introspectedTable) + introspectedTable.getAttribute(Const.SERVICE_IMPL_SUFFIX_ATTR);
 	}
 
-	public static FullyQualifiedJavaType getServiceImplType(IntrospectedTable introspectedTable, AsteriaContext context) {
-		return new FullyQualifiedJavaType(StringUtils.join(new String[]{context.getBasePackage(), context.getServiceImplPackage(), getServiceImplName(introspectedTable, context)}, "."));
+	public static FullyQualifiedJavaType getServiceImplType(IntrospectedTable introspectedTable, Context context) {
+		return new FullyQualifiedJavaType(StringUtils.join(new String[]{getBasePackage(context), (String) introspectedTable.getAttribute(Const.SERVICE_IMPL_PACKAGE_ATTR), getServiceImplName(introspectedTable, context)}, "."));
 	}
 
-	public static FullyQualifiedJavaType getBeanMapperType(AsteriaContext asteriaContext) {
-		if ("orika".equals(asteriaContext.getBeanMapper())) {
+	public static FullyQualifiedJavaType getBeanMapperType(Context context) {
+		if (Const.ORIKA_MAPPER.equals(context.getProperty("beanMapperType"))) {
 			return new FullyQualifiedJavaType("ma.glasnost.orika.MapperFacade");
 		}
 		return null;
@@ -98,8 +104,8 @@ public class PluginUtils {
 		return method;
 	}
 
-	public static String getBeanMapperWarp(AsteriaContext asteriaContext, FullyQualifiedJavaType javaType, String content) {
-		if (Const.ORIKA_MAPPER.equals(asteriaContext.getBeanMapper())) {
+	public static String getBeanMapperWarp(Context context, FullyQualifiedJavaType javaType, String content) {
+		if (Const.ORIKA_MAPPER.equals(context.getProperty("beanMapperType"))) {
 			if (javaType.getFullyQualifiedNameWithoutTypeParameters().equals("java.util.List")) {
 				List<FullyQualifiedJavaType> typeArguments = javaType.getTypeArguments();
 				return "mapperFacade.mapAsList(" + content + "," + typeArguments.get(0).getShortName() + ".class)";

@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import io.github.asteria.generator.mybatis.consts.Const;
-import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.mybatis.plugin.codegen.AbstractServiceGenerator;
 import io.github.asteria.generator.util.PluginUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -15,6 +14,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
 
@@ -24,7 +24,7 @@ import org.mybatis.generator.internal.util.JavaBeansUtil;
 public class DynamicServiceGenerator extends AbstractServiceGenerator {
 
 
-	public DynamicServiceGenerator(AsteriaContext context, IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
+	public DynamicServiceGenerator(Context context, IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
 		super(context, introspectedTable, topLevelClass);
 	}
 

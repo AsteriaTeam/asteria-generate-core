@@ -1,21 +1,16 @@
 package io.github.asteria.generator.mybatis.plugin;
 
+import java.util.List;
+import java.util.Properties;
+
 import io.github.asteria.generator.mybatis.consts.Const;
-import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.util.PluginUtils;
-import io.github.asteria.generator.util.PropertiesUtils;
-import org.mybatis.generator.api.CommentGenerator;
-import org.mybatis.generator.api.GeneratedJavaFile;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.config.CommentGeneratorConfiguration;
 import org.mybatis.generator.config.Context;
-
-import java.util.List;
-import java.util.Properties;
 
 public class AsteriaLombokPlugin extends PluginAdapter {
 

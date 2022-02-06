@@ -1,6 +1,5 @@
 package io.github.asteria.generator.mybatis.plugin.codegen;
 
-import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.util.PluginUtils;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -8,6 +7,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.config.Context;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class DefaultServiceGenerator extends AbstractServiceGenerator {
 
 
-	public DefaultServiceGenerator(AsteriaContext context, IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
+	public DefaultServiceGenerator(Context context, IntrospectedTable introspectedTable, TopLevelClass topLevelClass) {
 		super(context, introspectedTable, topLevelClass);
 	}
 

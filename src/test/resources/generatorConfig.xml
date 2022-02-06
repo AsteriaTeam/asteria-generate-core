@@ -7,15 +7,27 @@
         <property name="javaFileEncoding" value="UTF-8"/>
         <property name="targetProject" value="src/test/java"/>
         <property name="basePackage" value="io.github.homeant"/>
-        <property name="entityPackage" value="entity"/>
+        <property name="beanMapperType" value="orika"/>
+
 
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaOptionalPlugin">
             <property name="lombokBuilder" value="true"/>
         </plugin>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaLombokPlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServiceImplPlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin">
+            <property name="entityPackage" value="entity"/>
+            <property name="entitySuffix" value="DTO"/>
+        </plugin>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin">
+            <property name="servicePackage" value="service"/>
+            <property name="servicePrefix" value=""/>
+            <property name="serviceSuffix" value="Service"/>
+        </plugin>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServiceImplPlugin">
+            <property name="serviceImplPackage" value="service.impl"/>
+            <property name="serviceImplPrefix" value=""/>
+            <property name="serviceImplSuffix" value="ServiceImpl"/>
+        </plugin>
 
 
         <commentGenerator type="io.github.asteria.generator.mybatis.plugin.comment.AsteriaCommentGenerator">
@@ -29,7 +41,7 @@
 
         <javaModelGenerator targetPackage="io.github.homeant.domain" targetProject="src/test/java"/>
 
-        <javaClientGenerator targetPackage="io.github.homeant.mapper" targetProject="src/test/java" />
+        <javaClientGenerator targetPackage="io.github.homeant.mapper" targetProject="src/test/java"/>
 
 
         <table tableName="t_dict_type">
@@ -40,40 +52,47 @@
         </table>
     </context>
 
-   <!-- <context id="MyBatis3" targetRuntime="MyBatis3">
+    <!-- <context id="MyBatis3" targetRuntime="MyBatis3">
 
         <property name="javaFileEncoding" value="UTF-8"/>
         <property name="targetProject" value="src/test/java"/>
-        <property name="basePackage" value="io.github.asteria"/>
-        <property name="entityPackage" value="entity"/>
-        <property name="lombok" value="true"/>
-        <property name="lombokBuilder" value="true"/>
+        <property name="basePackage" value="io.github.homeant"/>
+        <property name="beanMapperType" value="orika"/>
 
+
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaOptionalPlugin">
+            <property name="lombokBuilder" value="true"/>
+        </plugin>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaLombokPlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaOptionalPlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin"/>
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServiceImplPlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin">
+            <property name="entityPackage" value="entity"/>
+            <property name="entitySuffix" value="DTO"/>
+        </plugin>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin">
+            <property name="servicePackage" value="service"/>
+            <property name="servicePrefix" value=""/>
+            <property name="serviceSuffix" value="Service"/>
+        </plugin>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServiceImplPlugin">
+            <property name="serviceImplPackage" value="service.impl"/>
+            <property name="serviceImplPrefix" value=""/>
+            <property name="serviceImplSuffix" value="ServiceImpl"/>
+        </plugin>
 
-        <commentGenerator type="io.github.asteria.generator.mybatis.plugin.comment.AsteriaCommentGenerator">
-            <property name="suppressDate" value="true"/>
-            <property name="addRemarkComments" value="true"/>
-        </commentGenerator>
+         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                                                 connectionURL="jdbc:mysql://{you db url}/ops_admin?user={user}&amp;password={password}&amp;useUnicode=true" />
 
-        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://49.232.3.116:3308/ops_admin?user=ops_admin&amp;password=ops-admin-test&amp;useUnicode=true" />
+         <javaModelGenerator targetPackage="io.github.homeant.domain" targetProject="src/test/java"/>
 
-        <javaModelGenerator targetPackage="io.github.asteria.domain" targetProject="src/test/java"/>
+         <sqlMapGenerator targetPackage="mapper" targetProject="src/test/resources"/>
 
-        <sqlMapGenerator targetPackage="mapper" targetProject="src/test/resources"/>
+         <javaClientGenerator targetPackage="io.github.homeant.mapper" targetProject="src/test/java" type="MAPPER"/>
 
-        <javaClientGenerator targetPackage="io.github.asteria.mapper" targetProject="src/test/java" type="MAPPER"/>
-
-        <table tableName="t_dict_type">
-            <generatedKey column="id" sqlStatement="JDBC"/>
-            <domainObjectRenamingRule searchString="^T" replaceString=""/>
-            <columnOverride column="is_valid" javaType="java.lang.Integer"/>
-            <columnOverride column="status" javaType="java.lang.Integer"/>
-        </table>
-    </context>-->
+         <table tableName="t_dict_type">
+             <generatedKey column="id" sqlStatement="JDBC"/>
+             <domainObjectRenamingRule searchString="^T" replaceString=""/>
+             <columnOverride column="is_valid" javaType="java.lang.Integer"/>
+             <columnOverride column="status" javaType="java.lang.Integer"/>
+         </table>
+     </context>-->
 </generatorConfiguration>
