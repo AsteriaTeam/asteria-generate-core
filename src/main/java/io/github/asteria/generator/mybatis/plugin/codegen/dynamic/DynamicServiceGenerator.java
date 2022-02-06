@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
 import io.github.asteria.generator.mybatis.consts.Const;
 import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.mybatis.plugin.codegen.AbstractServiceGenerator;
@@ -14,6 +15,7 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.config.PluginConfiguration;
 import org.mybatis.generator.internal.util.JavaBeansUtil;
 
 /**
@@ -28,6 +30,7 @@ public class DynamicServiceGenerator extends AbstractServiceGenerator {
 
 	@Override
 	public void generatedGetMethod() {
+		boolean optionalEnabled = (boolean) introspectedTable.getAttribute("optional.enabled");
 		FullyQualifiedJavaType sqlSupportType = new FullyQualifiedJavaType(introspectedTable.getMyBatisDynamicSqlSupportType());
 
 
@@ -49,8 +52,13 @@ public class DynamicServiceGenerator extends AbstractServiceGenerator {
 				.append(" ,").append(Const.SQL_BUILDER_IS_EQUAL_TO_WHEN_PRESENT).append("(").append(entityVal).append("::").append(JavaBeansUtil.getGetterMethodName(column.getJavaProperty(), column.getFullyQualifiedJavaType())).append("))\n");
 		}
 		builder.append(")");
-		List<String> bodyList = Arrays.stream(("return " + PluginUtils.getBeanMapperWarp(context, entityType, builder.toString()) + ";").split("\n")).collect(Collectors.toList());
-		method.addBodyLines(bodyList);
+		if (optionalEnabled) {
+			builder.append(".map(r->mapperFacade.map(r,").append(entityType.getShortName()).append(".class)).orElse(null);");
+			method.addBodyLines(Arrays.stream(("return "+builder.toString()).split("\n")).collect(Collectors.toList()));
+		} else {
+			List<String> bodyList = Arrays.stream(("return " + PluginUtils.getBeanMapperWarp(context, entityType, builder.toString()) + ";").split("\n")).collect(Collectors.toList());
+			method.addBodyLines(bodyList);
+		}
 
 		topLevelClass.addMethod(method);
 	}

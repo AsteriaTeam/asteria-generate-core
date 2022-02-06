@@ -27,24 +27,23 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 
 	private String dateFormat;
 
-	public AsteriaCommentGenerator(){
+	public AsteriaCommentGenerator() {
 		super();
 	}
 
 	@Override
 	public void addConfigurationProperties(Properties properties) {
-		author = properties.getProperty("author",System.getProperties().getProperty("user.name"));
-		dateFormat = properties.getProperty("dateFormat","yyyy-MM-dd");
+		author = properties.getProperty("author", System.getProperties().getProperty("user.name"));
+		dateFormat = properties.getProperty("dateFormat", "yyyy-MM-dd");
 	}
 
 	@Override
 	public void addFieldComment(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
 			field.addJavaDocLine("/**");
-			StringBuilder sb = new StringBuilder();
-			sb.append(" * ");
-			sb.append(introspectedColumn.getRemarks());
-			field.addJavaDocLine(sb.toString());
+			String sb = " * " +
+				introspectedColumn.getRemarks();
+			field.addJavaDocLine(sb);
 			field.addJavaDocLine(" */");
 		}
 		//添加注解
@@ -63,7 +62,7 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 	public void addModelClassComment(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
 		// 获取表注释
 		String remarks = introspectedTable.getRemarks();
-		if(StringUtils.isBlank(remarks)){
+		if (StringUtils.isBlank(remarks)) {
 			remarks = introspectedTable.getFullyQualifiedTableNameAtRuntime();
 		}
 		topLevelClass.addJavaDocLine("/**");
@@ -78,14 +77,17 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 	public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable) {
 
 	}
+
 	@Override
 	public void addClassComment(InnerClass innerClass, IntrospectedTable introspectedTable, boolean b) {
 
 	}
+
 	@Override
 	public void addEnumComment(InnerEnum innerEnum, IntrospectedTable introspectedTable) {
 
 	}
+
 	@Override
 	public void addGetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		StringBuilder sb = new StringBuilder();
@@ -106,6 +108,7 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 		method.addJavaDocLine(sb.toString());
 		method.addJavaDocLine(" */");
 	}
+
 	@Override
 	public void addSetterComment(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn) {
 		StringBuilder sb = new StringBuilder();
@@ -116,10 +119,10 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 			method.addJavaDocLine(sb.toString());
 			method.addJavaDocLine(" *");
 		}
-		Parameter parm = method.getParameters().get(0);
+		Parameter param = method.getParameters().get(0);
 		sb.setLength(0);
 		sb.append(" * @param ");
-		sb.append(parm.getName());
+		sb.append(param.getName());
 		if (StringUtility.stringHasValue(introspectedColumn.getRemarks())) {
 			sb.append(" ");
 			sb.append(introspectedColumn.getRemarks());
@@ -130,6 +133,7 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 
 	/**
 	 * map层代码注释
+	 *
 	 * @param method
 	 * @param introspectedTable
 	 */
@@ -161,18 +165,22 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 	public void addComment(XmlElement xmlElement) {
 
 	}
+
 	@Override
 	public void addRootComment(XmlElement xmlElement) {
 
 	}
+
 	@Override
 	public void addGeneralMethodAnnotation(Method method, IntrospectedTable introspectedTable, Set<FullyQualifiedJavaType> set) {
 
 	}
+
 	@Override
 	public void addGeneralMethodAnnotation(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn, Set<FullyQualifiedJavaType> set) {
 
 	}
+
 	@Override
 	public void addFieldAnnotation(Field field, IntrospectedTable introspectedTable, Set<FullyQualifiedJavaType> set) {
 
@@ -180,7 +188,9 @@ public class AsteriaCommentGenerator implements CommentGenerator {
 
 	@Override
 	public void addFieldAnnotation(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn, Set<FullyQualifiedJavaType> set) {
-
+		field.addJavaDocLine("/**");
+		field.addJavaDocLine(" * " + field.getName() + " " + introspectedColumn.getRemarks());
+		field.addJavaDocLine("*/");
 	}
 
 	@Override

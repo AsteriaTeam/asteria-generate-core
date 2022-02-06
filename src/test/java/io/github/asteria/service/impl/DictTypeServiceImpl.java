@@ -32,7 +32,7 @@ public class DictTypeServiceImpl implements DictTypeService {
 
     @Override
     public DictTypeDTO get(DictTypeDTO dictTypeDTO) {
-        return mapperFacade.map(dictTypeMapper.selectOne(dsl->dsl.where()
+        return dictTypeMapper.selectOne(dsl->dsl.where()
         .and(DictTypeDynamicSqlSupport.id ,isEqualToWhenPresent(dictTypeDTO::getId))
         .and(DictTypeDynamicSqlSupport.dictName ,isEqualToWhenPresent(dictTypeDTO::getDictName))
         .and(DictTypeDynamicSqlSupport.dictCode ,isEqualToWhenPresent(dictTypeDTO::getDictCode))
@@ -41,7 +41,7 @@ public class DictTypeServiceImpl implements DictTypeService {
         .and(DictTypeDynamicSqlSupport.createdAt ,isEqualToWhenPresent(dictTypeDTO::getCreatedAt))
         .and(DictTypeDynamicSqlSupport.updatedAt ,isEqualToWhenPresent(dictTypeDTO::getUpdatedAt))
         .and(DictTypeDynamicSqlSupport.deletedAt ,isEqualToWhenPresent(dictTypeDTO::getDeletedAt))
-        ),DictTypeDTO.class);
+        ).map(r->mapperFacade.map(r,DictTypeDTO.class)).orElse(null);
     }
 
     @Override

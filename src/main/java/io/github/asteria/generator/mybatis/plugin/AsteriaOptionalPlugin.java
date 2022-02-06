@@ -39,6 +39,8 @@ public class AsteriaOptionalPlugin extends PluginAdapter {
 		method.setReturnType(optionalType);
 
 		interfaze.addImportedType(optionalType);
+
+		introspectedTable.setAttribute("optional.enabled", true);
 		return true;
 	}
 

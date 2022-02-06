@@ -37,6 +37,7 @@ public class AsteriaLombokPlugin extends PluginAdapter {
 
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+		introspectedTable.setAttribute("lombok.enabled",true);
 		PluginUtils.addLombokAn(topLevelClass, asteriaContext.isLombokBuilder());
 		return true;
 	}
