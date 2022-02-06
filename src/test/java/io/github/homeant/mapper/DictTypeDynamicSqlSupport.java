@@ -1,4 +1,4 @@
-package io.github.asteria.mapper;
+package io.github.homeant.mapper;
 
 import java.sql.JDBCType;
 import org.mybatis.dynamic.sql.SqlColumn;

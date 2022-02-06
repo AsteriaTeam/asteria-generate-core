@@ -1,4 +1,4 @@
-package io.github.asteria.domain;
+package io.github.homeant.domain;
 
 import lombok.Data;
 

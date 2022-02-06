@@ -1,5 +1,6 @@
 package io.github.asteria.generator.mybatis.plugin;
 
+import io.github.asteria.generator.mybatis.consts.Const;
 import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.util.PluginUtils;
 import io.github.asteria.generator.util.PropertiesUtils;
@@ -18,7 +19,7 @@ import java.util.Properties;
 
 public class AsteriaLombokPlugin extends PluginAdapter {
 
-	private final AsteriaContext asteriaContext = new AsteriaContext();
+	private boolean lombokBuilder = false;
 
 	@Override
 	public boolean validate(List<String> list) {
@@ -37,8 +38,20 @@ public class AsteriaLombokPlugin extends PluginAdapter {
 
 	@Override
 	public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-		introspectedTable.setAttribute("lombok.enabled",true);
-		PluginUtils.addLombokAn(topLevelClass, asteriaContext.isLombokBuilder());
+		introspectedTable.setAttribute(Const.LOMBOK_ENABLED_ATTR, true);
+		introspectedTable.setAttribute(Const.LOMBOK_BUILDER_ENABLED_ATTR, lombokBuilder);
+		PluginUtils.addLombokAn(topLevelClass, lombokBuilder);
 		return true;
+	}
+
+	@Override
+	public void setContext(Context context) {
+		this.context = context;
+	}
+
+	@Override
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+		lombokBuilder = Boolean.parseBoolean(properties.getProperty("lombokBuilder", "false"));
 	}
 }

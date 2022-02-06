@@ -1,12 +1,12 @@
-package io.github.asteria.service.impl;
+package io.github.homeant.service.impl;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualToWhenPresent;
 
-import io.github.asteria.domain.DictType;
-import io.github.asteria.entity.DictTypeDTO;
-import io.github.asteria.mapper.DictTypeDynamicSqlSupport;
-import io.github.asteria.mapper.DictTypeMapper;
-import io.github.asteria.service.DictTypeService;
+import io.github.homeant.domain.DictType;
+import io.github.homeant.entity.DictTypeDTO;
+import io.github.homeant.mapper.DictTypeDynamicSqlSupport;
+import io.github.homeant.mapper.DictTypeMapper;
+import io.github.homeant.service.DictTypeService;
 import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 

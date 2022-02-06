@@ -1,6 +1,6 @@
-package io.github.asteria.service;
+package io.github.homeant.service;
 
-import io.github.asteria.entity.DictTypeDTO;
+import io.github.homeant.entity.DictTypeDTO;
 import java.util.List;
 
 public interface DictTypeService {

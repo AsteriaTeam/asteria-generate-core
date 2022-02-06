@@ -1,6 +1,7 @@
 package io.github.asteria.generator.mybatis.plugin;
 
 import com.google.common.collect.Lists;
+import io.github.asteria.generator.mybatis.consts.Const;
 import io.github.asteria.generator.mybatis.domain.AsteriaContext;
 import io.github.asteria.generator.util.PluginUtils;
 import io.github.asteria.generator.util.PropertiesUtils;
@@ -25,7 +26,6 @@ public class AsteriaEntityPlugin extends PluginAdapter {
 
 	private final AsteriaContext asteriaContext = new AsteriaContext();
 
-
 	@Override
 	public boolean validate(List<String> list) {
 		return true;
@@ -39,8 +39,9 @@ public class AsteriaEntityPlugin extends PluginAdapter {
 		List<IntrospectedColumn> columnList = introspectedTable.getAllColumns();
 		TopLevelClass entityClass = new TopLevelClass(packageVal + "." + domainName + asteriaContext.getEntitySuffix());
 		entityClass.setVisibility(JavaVisibility.PUBLIC);
-		if (asteriaContext.isLombok()) {
-			PluginUtils.addLombokAn(entityClass, asteriaContext.isLombokBuilder());
+		boolean lombok = (boolean) introspectedTable.getAttribute(Const.LOMBOK_ENABLED_ATTR);
+		if (lombok) {
+			PluginUtils.addLombokAn(entityClass, (boolean) introspectedTable.getAttribute(Const.LOMBOK_BUILDER_ENABLED_ATTR));
 		}
 		if (CollectionUtils.isNotEmpty(columnList)) {
 			List<Method> methodList = Lists.newArrayList();
@@ -48,7 +49,7 @@ public class AsteriaEntityPlugin extends PluginAdapter {
 				entityClass.addImportedType(r.getFullyQualifiedJavaType());
 				Field field = new Field(JavaBeansUtil.getJavaBeansField(r, this.context, introspectedTable));
 				entityClass.addField(field);
-				if (!asteriaContext.isLombok()) {
+				if (!lombok) {
 					// get set method
 					Method getMethod = JavaBeansUtil.getJavaBeansGetter(r, context, introspectedTable);
 					Method setMethod = JavaBeansUtil.getJavaBeansGetter(r, context, introspectedTable);
@@ -58,7 +59,7 @@ public class AsteriaEntityPlugin extends PluginAdapter {
 			});
 			methodList.forEach(entityClass::addMethod);
 		}
-		javaFileList.add(new GeneratedJavaFile(entityClass,asteriaContext.getTargetProject(), context.getJavaFormatter()));
+		javaFileList.add(new GeneratedJavaFile(entityClass, asteriaContext.getTargetProject(), context.getJavaFormatter()));
 		return javaFileList;
 	}
 

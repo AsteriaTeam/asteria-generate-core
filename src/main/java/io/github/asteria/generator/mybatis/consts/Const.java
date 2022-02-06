@@ -10,5 +10,10 @@ public class Const {
 
 	public static final String ORIKA_MAPPER = "orika";
 
+	public static final String LOMBOK_ENABLED_ATTR = "lombok.enabled";
+
+	public static final String LOMBOK_BUILDER_ENABLED_ATTR = "lombok.builder.enabled";
+
+	public static final String OPTIONAL_ENABLED_ATTR = "optional.enabled";
 
 }

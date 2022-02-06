@@ -1,14 +1,8 @@
-package io.github.asteria.entity;
+package io.github.homeant.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class DictTypeDTO {
     /**
      * 数据字典分类主键

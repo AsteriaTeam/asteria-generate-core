@@ -6,12 +6,12 @@
 
         <property name="javaFileEncoding" value="UTF-8"/>
         <property name="targetProject" value="src/test/java"/>
-        <property name="basePackage" value="io.github.asteria"/>
+        <property name="basePackage" value="io.github.homeant"/>
         <property name="entityPackage" value="entity"/>
-        <property name="lombok" value="true"/>
-        <property name="lombokBuilder" value="true"/>
 
-        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaOptionalPlugin"/>
+        <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaOptionalPlugin">
+            <property name="lombokBuilder" value="true"/>
+        </plugin>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaLombokPlugin"/>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaEntityPlugin"/>
         <plugin type="io.github.asteria.generator.mybatis.plugin.AsteriaServicePlugin"/>
@@ -27,9 +27,9 @@
                         connectionURL="jdbc:mysql://{you db url}/ops_admin?user={user}&amp;password={password}&amp;useUnicode=true" />
 
 
-        <javaModelGenerator targetPackage="io.github.asteria.domain" targetProject="src/test/java"/>
+        <javaModelGenerator targetPackage="io.github.homeant.domain" targetProject="src/test/java"/>
 
-        <javaClientGenerator targetPackage="io.github.asteria.mapper" targetProject="src/test/java" />
+        <javaClientGenerator targetPackage="io.github.homeant.mapper" targetProject="src/test/java" />
 
 
         <table tableName="t_dict_type">

@@ -1,9 +1,9 @@
-package io.github.asteria.mapper;
+package io.github.homeant.mapper;
 
-import static io.github.asteria.mapper.DictTypeDynamicSqlSupport.*;
+import static io.github.homeant.mapper.DictTypeDynamicSqlSupport.*;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
-import io.github.asteria.domain.DictType;
+import io.github.homeant.domain.DictType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

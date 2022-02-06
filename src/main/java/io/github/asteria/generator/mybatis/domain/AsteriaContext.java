@@ -3,16 +3,13 @@ package io.github.asteria.generator.mybatis.domain;
 import io.github.asteria.generator.util.PropertiesUtils;
 import lombok.Data;
 import org.mybatis.generator.config.Context;
+import org.mybatis.generator.config.ModelType;
 
 import java.util.Properties;
 
 
 @Data
 public class AsteriaContext {
-
-	private boolean lombok;
-
-	private boolean lombokBuilder;
 
 	private String targetProject;
 
@@ -36,15 +33,8 @@ public class AsteriaContext {
 
 	private String beanMapper;
 
+
 	public void setContext(Context context){
-		Boolean lombokFlag = PropertiesUtils.getPropertyAsBoolean(context.getProperties(), "lombok", false);
-		if (lombokFlag) {
-			this.lombok = true;
-			Boolean builderFlag = PropertiesUtils.getPropertyAsBoolean(context.getProperties(), "lombokBuilder", false);
-			if (builderFlag) {
-				this.lombokBuilder = true;
-			}
-		}
 		targetProject = PropertiesUtils.getPropertyAsString(context.getProperties(), "targetProject", "src/main/java");
 		basePackage = PropertiesUtils.getPropertyAsString(context.getProperties(), "basePackage", "io.github.asteria");
 		entityPackage = PropertiesUtils.getPropertyAsString(context.getProperties(), "entityPackage", "entity");
@@ -63,14 +53,6 @@ public class AsteriaContext {
 	}
 
 	public void setProperties(Properties properties){
-		Boolean lombokFlag = PropertiesUtils.getPropertyAsBoolean(properties, "lombok", false);
-		if (lombokFlag) {
-			this.lombok = true;
-			Boolean builderFlag = PropertiesUtils.getPropertyAsBoolean(properties, "lombokBuilder", false);
-			if (builderFlag) {
-				this.lombokBuilder = true;
-			}
-		}
 		targetProject = PropertiesUtils.getPropertyAsString(properties, "targetProject", targetProject);
 		basePackage = PropertiesUtils.getPropertyAsString(properties, "basePackage", basePackage);
 		entityPackage = PropertiesUtils.getPropertyAsString(properties, "entityPackage", entityPackage);
